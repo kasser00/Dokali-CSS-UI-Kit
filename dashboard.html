@@ -114,6 +114,24 @@
     
     .dash-actions { display: flex; align-items: center; gap: 1rem; }
     
+    .rtl-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+    
+    .rtl-btn:hover, .rtl-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
     /* Stats Cards */
     .dash-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
     
@@ -242,8 +260,8 @@
     <!-- Sidebar -->
     <aside class="dash-sidebar">
       <div class="dash-logo">
-        <div class="dash-logo-icon">K</div>
-        <span class="dash-logo-text">KitUI</span>
+        <div class="dash-logo-icon">BD</div>
+        <span class="dash-logo-text">BD KitUI</span>
       </div>
       
       <nav class="dash-nav-section">
@@ -345,6 +363,7 @@
             <p class="dash-subtitle">Here's what's happening with your projects today.</p>
           </div>
           <div class="dash-actions">
+            <button class="rtl-btn" onclick="toggleRTL()">RTL</button>
             <div class="dash-theme">
               <div class="theme-dot ocean active" onclick="setTheme('ocean')" title="Ocean"></div>
               <div class="theme-dot forest" onclick="setTheme('forest')" title="Forest"></div>
@@ -700,6 +719,14 @@
   <div class="toast-container toast-top-right" id="toast-container"></div>
   
   <script>
+    // RTL toggle
+    let isRTL = false;
+    function toggleRTL() {
+      isRTL = !isRTL;
+      document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
+      document.querySelector('.rtl-btn').classList.toggle('active', isRTL);
+    }
+    
     // Theme switcher
     function setTheme(theme) {
       document.body.setAttribute('data-theme', theme);
