@@ -68,6 +68,48 @@ Or toggle via JavaScript:
 document.documentElement.setAttribute('dir', 'rtl');
 ```
 
+### RTL Components Example
+
+```html
+<html dir="rtl">
+  <nav class="navbar">
+    <div class="navbar-actions">
+      <button class="btn btn-primary">تسجيل</button>
+    </div>
+    <ul class="navbar-nav">
+      <li><a class="navbar-nav-link active">الرئيسية</a></li>
+      <li><a class="navbar-nav-link">من نحن</a></li>
+    </ul>
+    <a class="navbar-brand">المتجر</a>
+  </nav>
+
+  <div class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#">الرئيسية</a></li>
+    <li class="breadcrumb-item"><a href="#">المنتجات</a></li>
+    <li class="breadcrumb-item active">التفاصيل</li>
+  </div>
+
+  <div class="sidebar">
+    <a class="sidebar-link active">لوحة التحكم</a>
+    <a class="sidebar-link">الملف الشخصي</a>
+    <a class="sidebar-link">الإعدادات</a>
+  </div>
+
+  <div class="pagination">
+    <li class="pagination-item"><a class="pagination-link">›</a></li>
+    <li class="pagination-item"><a class="pagination-link active">1</a></li>
+    <li class="pagination-item"><a class="pagination-link">‹</a></li>
+  </div>
+</html>
+```
+
+All components automatically adjust for RTL:
+- Navbar: logo moves to right, actions move to left
+- Sidebar: content aligns to right
+- Breadcrumb: separator direction reverses
+- Pagination: arrows reverse direction
+- Form inputs: text alignment adjusts
+
 ## Components
 
 ### Buttons
