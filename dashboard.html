@@ -102,6 +102,20 @@
       padding: 2rem;
     }
     
+    html[dir="rtl"] .dash-main {
+      margin-left: 0;
+      margin-right: 260px;
+    }
+    
+    html[dir="rtl"] .dash-sidebar {
+      border-right: none;
+      border-left: 1px solid var(--border);
+    }
+    
+    @media (max-width: 768px) {
+      html[dir="rtl"] .dash-main { margin-right: 0; }
+    }
+    
     .dash-header {
       display: flex;
       justify-content: space-between;
