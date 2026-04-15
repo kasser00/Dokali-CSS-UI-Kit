@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Dokali UI Kit</title>
+  <link rel="stylesheet" href="css/dokali-ui-kit.css">
+  <link rel="stylesheet" href="css/dokali-modals.css">
+  <link rel="stylesheet" href="css/dokali-toasts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; padding: 0; background: var(--background); margin: 0; }
+    
+    /* Dashboard Layout */
+    .dashboard { display: flex; min-height: 100vh; }
+    
+    /* Sidebar */
+    .dash-sidebar {
+      width: 260px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 100;
+    }
+    
+    .dash-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .dash-logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.125rem;
+    }
+    
+    .dash-logo-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .dash-nav-section { margin-bottom: 1.5rem; }
+    
+    .dash-nav-title {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      padding: 0 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .dash-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+    
+    .dash-nav-link:hover {
+      background: var(--border-light);
+      color: var(--text-primary);
+    }
+    
+    .dash-nav-link.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-right: 3px solid var(--primary);
+    }
+    
+    .dash-nav-link svg { width: 20px; height: 20px; flex-shrink: 0; }
+    
+    /* Main Content */
+    .dash-main {
+      flex: 1;
+      margin-left: 260px;
+      padding: 2rem;
+    }
+    
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .dash-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .dash-subtitle { color: var(--text-muted); margin: 0; }
+    
+    .dash-actions { display: flex; align-items: center; gap: 1rem; }
+    
+    /* Stats Cards */
+    .dash-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+    
+    .dash-stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      transition: var(--transition);
+    }
+    
+    .dash-stat-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    
+    .dash-stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    
+    .dash-stat-icon svg { width: 20px; height: 20px; }
+    .dash-stat-icon.blue { background: #dbeafe; color: #2563eb; }
+    .dash-stat-icon.green { background: #dcfce7; color: #16a34a; }
+    .dash-stat-icon.orange { background: #ffedd5; color: #ea580c; }
+    .dash-stat-icon.purple { background: #f3e8ff; color: #9333ea; }
+    
+    .dash-stat-value { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .dash-stat-label { font-size: 0.875rem; color: var(--text-muted); }
+    .dash-stat-change { font-size: 0.75rem; margin-top: 0.5rem; }
+    .dash-stat-change.positive { color: var(--success); }
+    .dash-stat-change.negative { color: var(--error); }
+    
+    /* Content Grid */
+    .dash-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .dash-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    
+    .dash-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+    }
+    
+    .dash-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .dash-card-title { font-size: 1rem; font-weight: 600; }
+    
+    /* Quick Actions */
+    .dash-quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    
+    .dash-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: var(--border-light);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.875rem;
+      color: var(--text-primary);
+    }
+    
+    .dash-action-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+    
+    .dash-action-btn svg { width: 20px; height: 20px; color: var(--primary); }
+    
+    /* Theme Switcher */
+    .dash-theme { display: flex; gap: 0.5rem; }
+    
+    .theme-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .theme-dot:hover, .theme-dot.active {
+      border-color: var(--text-primary);
+      transform: scale(1.1);
+    }
+    
+    .theme-dot.ocean { background: #0ea5e9; }
+    .theme-dot.forest { background: #059669; }
+    .theme-dot.sunset { background: #f97316; }
+    .theme-dot.berry { background: #a855f7; }
+    .theme-dot.midnight { background: #1e293b; }
+    .theme-dot.rose { background: #f43f5e; }
+    
+    /* Section Visibility */
+    .dash-section { display: none; }
+    .dash-section.active { display: block; }
+    
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .dash-stats { grid-template-columns: repeat(2, 1fr); }
+      .dash-grid, .dash-grid-2 { grid-template-columns: 1fr; }
+    }
+    
+    @media (max-width: 768px) {
+      .dash-sidebar { display: none; }
+      .dash-main { margin-left: 0; }
+      .dash-stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-theme="ocean">
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="dash-sidebar">
+      <div class="dash-logo">
+        <div class="dash-logo-icon">K</div>
+        <span class="dash-logo-text">KitUI</span>
+      </div>
+      
+      <nav class="dash-nav-section">
+        <div class="dash-nav-title">Main</div>
+        <button class="dash-nav-link active" onclick="showSection('dashboard', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </button>
+      </nav>
+      
+      <nav class="dash-nav-section">
+        <div class="dash-nav-title">Components</div>
+        <button class="dash-nav-link" onclick="showSection('buttons', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+          Buttons
+        </button>
+        <button class="dash-nav-link" onclick="showSection('cards', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+          Cards
+        </button>
+        <button class="dash-nav-link" onclick="showSection('forms', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Forms
+        </button>
+        <button class="dash-nav-link" onclick="showSection('tables', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4"/></svg>
+          Tables
+        </button>
+        <button class="dash-nav-link" onclick="showSection('badges', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Badges
+        </button>
+        <button class="dash-nav-link" onclick="showSection('alerts', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Alerts
+        </button>
+      </nav>
+      
+      <nav class="dash-nav-section">
+        <div class="dash-nav-title">Advanced</div>
+        <button class="dash-nav-link" onclick="showSection('modals', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+          Modals
+        </button>
+        <button class="dash-nav-link" onclick="showSection('toasts', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Toasts
+        </button>
+        <button class="dash-nav-link" onclick="showSection('tabs', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          Tabs
+        </button>
+        <button class="dash-nav-link" onclick="showSection('steps', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><polyline points="22 4 12 14 9 11"/></svg>
+          Steps
+        </button>
+        <button class="dash-nav-link" onclick="showSection('progress', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="4"/></svg>
+          Progress
+        </button>
+      </nav>
+      
+      <nav class="dash-nav-section">
+        <div class="dash-nav-title">Navigation</div>
+        <button class="dash-nav-link" onclick="showSection('navbar', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          Navbar
+        </button>
+        <button class="dash-nav-link" onclick="showSection('sidebar', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+          Sidebar
+        </button>
+        <button class="dash-nav-link" onclick="showSection('breadcrumb', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 5"/></svg>
+          Breadcrumb
+        </button>
+        <button class="dash-nav-link" onclick="showSection('pagination', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          Pagination
+        </button>
+      </nav>
+      
+      <nav class="dash-nav-section" style="margin-top: auto;">
+        <div class="dash-nav-title">Settings</div>
+        <button class="dash-nav-link" onclick="showSection('settings', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </button>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="dash-main">
+      <!-- Dashboard Section -->
+      <section id="section-dashboard" class="dash-section active">
+        <div class="dash-header">
+          <div>
+            <h1 class="dash-title">Welcome back, John!</h1>
+            <p class="dash-subtitle">Here's what's happening with your projects today.</p>
+          </div>
+          <div class="dash-actions">
+            <div class="dash-theme">
+              <div class="theme-dot ocean active" onclick="setTheme('ocean')" title="Ocean"></div>
+              <div class="theme-dot forest" onclick="setTheme('forest')" title="Forest"></div>
+              <div class="theme-dot sunset" onclick="setTheme('sunset')" title="Sunset"></div>
+              <div class="theme-dot berry" onclick="setTheme('berry')" title="Berry"></div>
+              <div class="theme-dot midnight" onclick="setTheme('midnight')" title="Midnight"></div>
+              <div class="theme-dot rose" onclick="setTheme('rose')" title="Rose"></div>
+            </div>
+            <button class="btn btn-primary" onclick="openModal('modal-create')">+ New Project</button>
+          </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="dash-stats">
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+            <div class="dash-stat-value">24.5K</div>
+            <div class="dash-stat-label">Total Views</div>
+            <div class="dash-stat-change positive">+12% from last month</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <div class="dash-stat-value">1,284</div>
+            <div class="dash-stat-label">Conversions</div>
+            <div class="dash-stat-change positive">+8% from last month</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div class="dash-stat-value">8,946</div>
+            <div class="dash-stat-label">Active Users</div>
+            <div class="dash-stat-change negative">-2% from last month</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <div class="dash-stat-value">$48,200</div>
+            <div class="dash-stat-label">Revenue</div>
+            <div class="dash-stat-change positive">+24% from last month</div>
+          </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="dash-grid">
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <h3 class="dash-card-title">Recent Projects</h3>
+              <button class="btn btn-ghost btn-sm">View All</button>
+            </div>
+            <div class="table-container">
+              <table class="table">
+                <thead><tr><th>Project</th><th>Status</th><th>Progress</th><th>Team</th></tr></thead>
+                <tbody>
+                  <tr><td>Website Redesign</td><td><span class="badge badge-success">Active</span></td><td><div class="progress" style="width: 80px;"><div class="progress-bar" style="width: 75%;"></div></div></td><td><div class="avatar-group"><div class="avatar avatar-sm">JD</div></div></td></tr>
+                  <tr><td>Mobile App</td><td><span class="badge badge-warning">Pending</span></td><td><div class="progress" style="width: 80px;"><div class="progress-bar" style="width: 45%;"></div></div></td><td><div class="avatar-group"><div class="avatar avatar-sm">AS</div></div></td></tr>
+                  <tr><td>API Integration</td><td><span class="badge badge-info">In Review</span></td><td><div class="progress" style="width: 80px;"><div class="progress-bar" style="width: 90%;"></div></div></td><td><div class="avatar-group"><div class="avatar avatar-sm">MK</div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div class="dash-card">
+            <div class="dash-card-header"><h3 class="dash-card-title">Quick Actions</h3></div>
+            <div class="dash-quick-actions">
+              <button class="dash-action-btn" onclick="openModal('modal-create'); showToast('success')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span>New Modal</span></button>
+              <button class="dash-action-btn" onclick="showToast('success')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>Show Toast</span></button>
+              <button class="dash-action-btn" onclick="showToast('warning')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Warning</span></button>
+              <button class="dash-action-btn" onclick="showToast('error')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span>Error</span></button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dash-card">
+          <div class="dash-card-header"><h3 class="dash-card-title">System Status</h3></div>
+          <div class="alert alert-success"><span class="alert-title">All systems operational</span><span class="alert-description">Your application is running smoothly.</span></div>
+        </div>
+      </section>
+      
+      <!-- Buttons Section -->
+      <section id="section-buttons" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Buttons</h1></div>
+        <div class="dash-grid-2">
+          <div class="dash-card">
+            <div class="dash-card-header"><h3 class="dash-card-title">Variants</h3></div>
+            <div class="flex gap-2" style="flex-wrap: wrap;">
+              <button class="btn btn-primary">Primary</button>
+              <button class="btn btn-secondary">Secondary</button>
+              <button class="btn btn-ghost">Ghost</button>
+              <button class="btn btn-danger">Danger</button>
+              <button class="btn btn-success">Success</button>
+            </div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-header"><h3 class="dash-card-title">Sizes</h3></div>
+            <div class="flex gap-2 items-center">
+              <button class="btn btn-primary btn-sm">Small</button>
+              <button class="btn btn-primary">Default</button>
+              <button class="btn btn-primary btn-lg">Large</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Cards Section -->
+      <section id="section-cards" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Cards</h1></div>
+        <div class="dash-grid-2">
+          <div class="card"><h4 class="card-title">Simple Card</h4><p class="card-body">A basic card component.</p></div>
+          <div class="card card-elevated"><h4 class="card-title">Elevated Card</h4><p class="card-body">Stronger shadow on hover.</p></div>
+        </div>
+        <div class="dash-card">
+          <div class="card-header"><h4 class="card-title">Card with Header/Footer</h4><p class="card-subtitle">Subtitle</p></div>
+          <p class="card-body">Card body content.</p>
+          <div class="card-footer"><button class="btn btn-primary btn-sm">Action</button></div>
+        </div>
+      </section>
+      
+      <!-- Forms Section -->
+      <section id="section-forms" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Forms</h1></div>
+        <div class="dash-grid-2">
+          <div class="dash-card">
+            <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="Enter email"></div>
+            <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Enter password"></div>
+          </div>
+          <div class="dash-card">
+            <div class="form-group"><label class="form-label">Country</label><select class="form-input form-select"><option>Select</option><option>USA</option><option>UK</option></select></div>
+            <div class="form-group"><label class="flex items-center gap-2"><input type="checkbox" class="form-checkbox"><span>Remember me</span></label></div>
+            <div class="form-group"><label class="flex items-center gap-2"><input type="checkbox" class="form-switch"><span>Dark Mode</span></label></div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Tables Section -->
+      <section id="section-tables" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Tables</h1></div>
+        <div class="dash-card">
+          <div class="table-container">
+            <table class="table table-striped">
+              <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Role</th></tr></thead>
+              <tbody>
+                <tr><td>John Doe</td><td>john@example.com</td><td><span class="badge badge-success">Active</span></td><td>Admin</td></tr>
+                <tr><td>Jane Smith</td><td>jane@example.com</td><td><span class="badge badge-warning">Pending</span></td><td>User</td></tr>
+                <tr><td>Bob Wilson</td><td>bob@example.com</td><td><span class="badge badge-error">Inactive</span></td><td>User</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Badges Section -->
+      <section id="section-badges" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Badges</h1></div>
+        <div class="dash-card">
+          <div class="flex gap-2" style="flex-wrap: wrap;">
+            <span class="badge badge-primary">Primary</span>
+            <span class="badge badge-success">Success</span>
+            <span class="badge badge-warning">Warning</span>
+            <span class="badge badge-error">Error</span>
+            <span class="badge badge-info">Info</span>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Alerts Section -->
+      <section id="section-alerts" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Alerts</h1></div>
+        <div class="dash-card" style="flex-direction: column; gap: 0.75rem; display: flex;">
+          <div class="alert alert-success"><span class="alert-title">Success!</span><span class="alert-description">Operation completed.</span></div>
+          <div class="alert alert-warning"><span class="alert-title">Warning</span><span class="alert-description">Please review settings.</span></div>
+          <div class="alert alert-error"><span class="alert-title">Error</span><span class="alert-description">Something went wrong.</span></div>
+          <div class="alert alert-info"><span class="alert-title">Info</span><span class="alert-description">New features available.</span></div>
+        </div>
+      </section>
+      
+      <!-- Modals Section -->
+      <section id="section-modals" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Modals</h1></div>
+        <div class="dash-grid-2">
+          <div class="dash-card">
+            <div class="dash-card-header"><h3 class="dash-card-title">Basic Modal</h3></div>
+            <button class="btn btn-primary" onclick="openModal('modal-basic')">Open Modal</button>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-header"><h3 class="dash-card-title">Confirmation</h3></div>
+            <button class="btn btn-danger" onclick="openModal('modal-confirm')">Confirm Action</button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Toasts Section -->
+      <section id="section-toasts" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Toasts</h1></div>
+        <div class="dash-grid-2">
+          <div class="dash-card">
+            <div class="dash-card-header"><h3 class="dash-card-title">Success Toast</h3></div>
+            <button class="btn btn-success" onclick="showToast('success')">Show Success</button>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-header"><h3 class="dash-card-title">Error Toast</h3></div>
+            <button class="btn btn-danger" onclick="showToast('error')">Show Error</button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Tabs Section -->
+      <section id="section-tabs" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Tabs</h1></div>
+        <div class="dash-card">
+          <div class="tab-list tab-pills">
+            <button class="tab-button active" onclick="switchTab(this)">Overview</button>
+            <button class="tab-button" onclick="switchTab(this)">Features</button>
+            <button class="tab-button" onclick="switchTab(this)">Pricing</button>
+          </div>
+          <p class="card-body" style="margin-top: 1rem;">Tab content appears here. Switch between tabs to see the active state.</p>
+        </div>
+      </section>
+      
+      <!-- Steps Section -->
+      <section id="section-steps" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Steps</h1></div>
+        <div class="dash-card">
+          <div class="steps">
+            <div class="step completed"><div class="step-icon">✓</div><div class="step-label">Step 1</div></div>
+            <div class="step completed"><div class="step-icon">✓</div><div class="step-label">Step 2</div></div>
+            <div class="step active"><div class="step-icon">3</div><div class="step-label">Step 3</div></div>
+            <div class="step"><div class="step-icon">4</div><div class="step-label">Step 4</div></div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Progress Section -->
+      <section id="section-progress" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Progress Bars</h1></div>
+        <div class="dash-card">
+          <p class="mb-2">Default</p>
+          <div class="progress mb-3"><div class="progress-bar" style="width: 65%;"></div></div>
+          <p class="mb-2">Small</p>
+          <div class="progress progress-sm mb-3"><div class="progress-bar" style="width: 45%;"></div></div>
+          <p class="mb-2">Large</p>
+          <div class="progress progress-lg"><div class="progress-bar" style="width: 85%;"></div></div>
+        </div>
+      </section>
+      
+      <!-- Navbar Section -->
+      <section id="section-navbar" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Navbar</h1></div>
+        <div class="dash-card" style="padding: 0; overflow: hidden;">
+          <nav class="navbar">
+            <a href="#" class="navbar-brand"><div class="navbar-logo">K</div><span>Brand</span></a>
+            <ul class="navbar-nav">
+              <li class="navbar-nav-item"><a class="navbar-nav-link active">Home</a></li>
+              <li class="navbar-nav-item"><a class="navbar-nav-link">Features</a></li>
+              <li class="navbar-nav-item"><a class="navbar-nav-link">Pricing</a></li>
+            </ul>
+            <div class="navbar-actions"><button class="btn btn-primary btn-sm">Get Started</button></div>
+          </nav>
+        </div>
+      </section>
+      
+      <!-- Sidebar Section -->
+      <section id="section-sidebar" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Sidebar</h1></div>
+        <div class="dash-card" style="padding: 0; overflow: hidden;">
+          <div class="sidebar" style="position: relative; height: 300px; width: 100%; border: 1px solid var(--border); border-radius: var(--radius-lg);">
+            <div class="sidebar-header"><a href="#" class="sidebar-brand"><div class="sidebar-logo">K</div><span>Brand</span></a></div>
+            <nav class="sidebar-nav">
+              <div class="sidebar-section">
+                <div class="sidebar-section-title">Menu</div>
+                <a href="#" class="sidebar-link active">Dashboard</a>
+                <a href="#" class="sidebar-link">Profile</a>
+                <a href="#" class="sidebar-link">Analytics</a>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Breadcrumb Section -->
+      <section id="section-breadcrumb" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Breadcrumb</h1></div>
+        <div class="dash-card">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Products</a></li>
+            <li class="breadcrumb-item active">Cart</li>
+          </ol>
+        </div>
+      </section>
+      
+      <!-- Pagination Section -->
+      <section id="section-pagination" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Pagination</h1></div>
+        <div class="dash-card">
+          <ul class="pagination">
+            <li class="pagination-item"><a class="pagination-link disabled">‹</a></li>
+            <li class="pagination-item"><a class="pagination-link active">1</a></li>
+            <li class="pagination-item"><a class="pagination-link">2</a></li>
+            <li class="pagination-item"><a class="pagination-link">3</a></li>
+            <li class="pagination-item"><a class="pagination-link">›</a></li>
+          </ul>
+        </div>
+      </section>
+      
+      <!-- Settings Section -->
+      <section id="section-settings" class="dash-section">
+        <div class="dash-header"><h1 class="dash-title">Settings</h1></div>
+        <div class="dash-card">
+          <div class="form-group"><label class="form-label">Display Name</label><input type="text" class="form-input" value="John Doe"></div>
+          <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" value="john@example.com"></div>
+          <div class="flex gap-2 mt-3"><button class="btn btn-primary">Save Changes</button><button class="btn btn-secondary">Cancel</button></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <!-- Modals -->
+  <div class="modal-overlay modal-slide-up" id="modal-basic">
+    <div class="modal">
+      <div class="modal-header"><h3 class="modal-title">Basic Modal</h3><button class="modal-close" onclick="closeModal('modal-basic')">×</button></div>
+      <div class="modal-body"><p>This is a basic modal with slide-up animation.</p></div>
+      <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-basic')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-basic')">Confirm</button></div>
+    </div>
+  </div>
+  
+  <div class="modal-overlay modal-zoom-in" id="modal-confirm">
+    <div class="modal">
+      <div class="modal-confirm">
+        <div class="modal-confirm-icon error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+        <h3 class="modal-confirm-title">Confirm Delete</h3>
+        <p class="modal-confirm-message">Are you sure you want to delete this item?</p>
+        <div class="modal-confirm-actions">
+          <button class="btn btn-secondary" onclick="closeModal('modal-confirm')">Cancel</button>
+          <button class="btn btn-danger" onclick="closeModal('modal-confirm'); showToast('error')">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-overlay modal-slide-up" id="modal-create">
+    <div class="modal">
+      <div class="modal-header"><h3 class="modal-title">Create New Project</h3><button class="modal-close" onclick="closeModal('modal-create')">×</button></div>
+      <div class="modal-body modal-form">
+        <div class="form-group"><label class="form-label">Project Name</label><input type="text" class="form-input" placeholder="Enter project name"></div>
+        <div class="form-group"><label class="form-label">Description</label><textarea class="form-input form-textarea" placeholder="Describe your project..."></textarea></div>
+        <div class="form-group"><label class="form-label">Status</label><select class="form-input form-select"><option>Active</option><option>Pending</option><option>Draft</option></select></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-create')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-create'); showToast('success')">Create</button></div>
+    </div>
+  </div>
+  
+  <!-- Toast Container -->
+  <div class="toast-container toast-top-right" id="toast-container"></div>
+  
+  <script>
+    // Theme switcher
+    function setTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      document.querySelectorAll('.theme-dot').forEach(dot => dot.classList.remove('active'));
+      document.querySelector(`.theme-dot.${theme}`).classList.add('active');
+    }
+    
+    // Show section
+    function showSection(sectionId, btn) {
+      document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.dash-nav-link').forEach(l => l.classList.remove('active'));
+      document.getElementById(`section-${sectionId}`).classList.add('active');
+      btn.classList.add('active');
+    }
+    
+    // Open modal
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+    
+    // Close modal
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+    
+    // Switch tab
+    function switchTab(btn) {
+      btn.parentElement.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    
+    // Show toast
+    function showToast(type) {
+      const container = document.getElementById('toast-container');
+      const icons = {
+        success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+        error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+        warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+        info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+      };
+      const titles = { success: 'Success!', error: 'Error', warning: 'Warning', info: 'Info' };
+      const messages = {
+        success: 'Project created successfully.',
+        error: 'Failed to delete item.',
+        warning: 'Please review your settings.',
+        info: 'New features available.'
+      };
+      
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type} toast-slide-in-up`;
+      toast.innerHTML = `
+        <div class="toast-icon">${icons[type]}</div>
+        <div class="toast-content"><div class="toast-title">${titles[type]}</div><div class="toast-message">${messages[type]}</div></div>
+        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+        <div class="toast-progress ${type}"></div>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => toast.querySelector('.toast-progress')?.style && (toast.querySelector('.toast-progress').style.width = '0%'), 100);
+      setTimeout(() => { toast.style.animation = 'toastFadeOut 0.3s ease forwards'; setTimeout(() => toast.remove(), 300); }, 5000);
+    }
+    
+    // Close modal on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('active');
+      });
+    });
+    
+    // Add fade animation
+    const style = document.createElement('style');
+    style.textContent = `@keyframes toastFadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } }`;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toast Notifications - Dokali UI Kit</title>
+  <link rel="stylesheet" href="css/dokali-ui-kit.css">
+  <link rel="stylesheet" href="css/dokali-toasts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; padding: 2rem; background: var(--background); }
+    .demo-section { max-width: 900px; margin: 0 auto 3rem; }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    h2 { margin-top: 2rem; margin-bottom: 0.5rem; }
+    p { color: var(--text-muted); margin-bottom: 1.5rem; }
+    
+    .toast-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.75rem;
+    }
+    
+    .toast-btn {
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+    
+    .toast-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .theme-switcher {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .theme-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    
+    .theme-btn:hover, .theme-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .category {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .category h3 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+    
+    .demo-toasts {
+      min-height: 400px;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .demo-toasts-label {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    
+    /* Code Window Styles */
+    .code-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.8125rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 1rem;
+    }
+    
+    .code-toggle:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    
+    .code-window { display: none; margin-top: 1rem; background: #1e1e1e; border-radius: var(--radius-md); overflow: hidden; }
+    .code-window.show { display: block; }
+    .code-header { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem; background: #2d2d2d; }
+    .code-title { font-size: 0.75rem; font-weight: 500; color: #9ca3af; }
+    .code-copy { font-size: 0.75rem; padding: 0.25rem 0.5rem; background: #3d3d3d; border: none; border-radius: var(--radius-sm); color: #9ca3af; cursor: pointer; }
+    .code-copy:hover { background: var(--primary); color: white; }
+    .code-copy.copied { background: var(--success); color: white; }
+    .code-content { padding: 1rem; overflow-x: auto; max-height: 300px; }
+    .code-content pre { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.8125rem; line-height: 1.6; color: #d4d4d4; white-space: pre-wrap; }
+  </style>
+</head>
+<body data-theme="ocean">
+  <div class="demo-section">
+    <h1>Toast Notifications Kit</h1>
+    <p>Beautiful toast notifications with various styles and animations</p>
+    
+    <div class="theme-switcher">
+      <button class="theme-btn active" data-theme="ocean">Ocean</button>
+      <button class="theme-btn" data-theme="forest">Forest</button>
+      <button class="theme-btn" data-theme="sunset">Sunset</button>
+      <button class="theme-btn" data-theme="berry">Berry</button>
+      <button class="theme-btn" data-theme="midnight">Midnight</button>
+      <button class="theme-btn" data-theme="rose">Rose</button>
+    </div>
+  </div>
+
+  <!-- Toast Colors -->
+  <div class="demo-section">
+    <h2>Toast Colors</h2>
+    <p>Different color variants for different message types</p>
+    
+    <div class="category">
+      <h3>Status Colors</h3>
+      <div class="toast-btn-grid">
+        <button class="toast-btn" onclick="showToastColor('success')">Success</button>
+        <button class="toast-btn" onclick="showToastColor('warning')">Warning</button>
+        <button class="toast-btn" onclick="showToastColor('error')">Error</button>
+        <button class="toast-btn" onclick="showToastColor('info')">Info</button>
+      </div>
+      <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+      <div class="code-window">
+        <div class="code-header"><span class="code-title">HTML</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-content"><pre>&lt;!-- Success Toast --&gt;
+&lt;div class="toast toast-success"&gt;
+  &lt;div class="toast-icon"&gt;
+    &lt;svg&gt;...&lt;/svg&gt;
+  &lt;/div&gt;
+  &lt;div class="toast-content"&gt;
+    &lt;div class="toast-title"&gt;Success!&lt;/div&gt;
+    &lt;div class="toast-message"&gt;Your changes saved.&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="toast-close"&gt;×&lt;/button&gt;
+  &lt;div class="toast-progress success"&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Colors: toast-success, toast-warning, toast-error, toast-info --&gt;</pre></div>
+      </div>
+    </div>
+  </div>
+    </div>
+  </div>
+
+  <!-- Toast Styles -->
+  <div class="demo-section">
+    <h2>Toast Styles</h2>
+    <p>Different visual styles for toasts</p>
+    
+    <div class="category">
+      <h3>Style Variants</h3>
+      <div class="toast-btn-grid">
+        <button class="toast-btn" onclick="showToastStyle('outline', 'success')">Outline</button>
+        <button class="toast-btn" onclick="showToastStyle('solid', 'success')">Solid</button>
+        <button class="toast-btn" onclick="showToastStyle('gradient', 'success')">Gradient</button>
+        <button class="toast-btn" onclick="showToastStyle('light', 'success')">Light</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Transitions -->
+  <div class="demo-section">
+    <h2>Toast Transitions</h2>
+    <p>Different entrance animations</p>
+    
+    <div class="category">
+      <h3>Slide Animations</h3>
+      <div class="toast-btn-grid">
+        <button class="toast-btn" onclick="showToastTransition('slide-right', 'success')">Slide Right</button>
+        <button class="toast-btn" onclick="showToastTransition('slide-left', 'success')">Slide Left</button>
+        <button class="toast-btn" onclick="showToastTransition('slide-up', 'success')">Slide Up</button>
+        <button class="toast-btn" onclick="showToastTransition('slide-down', 'success')">Slide Down</button>
+      </div>
+      <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+      <div class="code-window">
+        <div class="code-header"><span class="code-title">HTML</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-content"><pre>&lt;!-- Toast with Slide Right Animation --&gt;
+&lt;div class="toast toast-success toast-slide-in-right"&gt;
+  &lt;div class="toast-icon"&gt;...&lt;/div&gt;
+  &lt;div class="toast-content"&gt;
+    &lt;div class="toast-title"&gt;Success!&lt;/div&gt;
+    &lt;div class="toast-message"&gt;Your changes saved.&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="toast-close"&gt;×&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Transitions: toast-slide-in-right, toast-slide-in-left, toast-slide-in-up, toast-slide-in-down --&gt;</pre></div>
+      </div>
+    </div>
+    
+    <div class="category">
+      <h3>Other Animations</h3>
+      <div class="toast-btn-grid">
+        <button class="toast-btn" onclick="showToastTransition('fade', 'success')">Fade</button>
+        <button class="toast-btn" onclick="showToastTransition('zoom-in', 'success')">Zoom In</button>
+        <button class="toast-btn" onclick="showToastTransition('zoom-out', 'success')">Zoom Out</button>
+        <button class="toast-btn" onclick="showToastTransition('bounce', 'success')">Bounce</button>
+        <button class="toast-btn" onclick="showToastTransition('flip', 'success')">Flip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Types -->
+  <div class="demo-section">
+    <h2>Toast Types</h2>
+    <p>Different content layouts</p>
+    
+    <div class="category">
+      <h3>Content Types</h3>
+      <div class="toast-btn-grid">
+        <button class="toast-btn" onclick="showToastType('simple', 'success')">Simple</button>
+        <button class="toast-btn" onclick="showToastType('avatar', 'success')">With Avatar</button>
+        <button class="toast-btn" onclick="showToastType('action', 'success')">With Action</button>
+        <button class="toast-btn" onclick="showToastType('rounded', 'success')">Rounded</button>
+        <button class="toast-btn" onclick="showToastType('border-left', 'success')">Border Left</button>
+        <button class="toast-btn" onclick="showToastType('border-right', 'success')">Border Right</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Sizes -->
+  <div class="demo-section">
+    <h2>Toast Sizes</h2>
+    <p>Small, default, and large sizes</p>
+    
+    <div class="category">
+      <h3>Sizes</h3>
+      <div class="toast-btn-grid">
+        <button class="toast-btn" onclick="showToastSize('sm', 'success')">Small</button>
+        <button class="toast-btn" onclick="showToastSize('', 'success')">Default</button>
+        <button class="toast-btn" onclick="showToastSize('lg', 'success')">Large</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview Area -->
+  <div class="demo-section">
+    <h2>Live Preview</h2>
+    <p>Click buttons above to see toasts here</p>
+    
+    <div class="demo-toasts" id="toast-demo">
+      <span class="demo-toasts-label">Click buttons above to preview</span>
+    </div>
+  </div>
+
+  <!-- Toast Templates Container -->
+  <div class="toast-container toast-top-right" id="toast-container"></div>
+
+  <script>
+    // Theme switcher
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.body.setAttribute('data-theme', btn.dataset.theme);
+      });
+    });
+
+    // Toast icon templates
+    const icons = {
+      success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+      warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+      error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+      info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+    };
+
+    const titles = {
+      success: 'Success!',
+      warning: 'Warning',
+      error: 'Error',
+      info: 'Information'
+    };
+
+    const messages = {
+      success: 'Your changes have been saved successfully.',
+      warning: 'Please review your settings before proceeding.',
+      error: 'Something went wrong. Please try again.',
+      info: 'New features are available for you.'
+    };
+
+    // Get transition class
+    function getTransitionClass(transition) {
+      const classes = {
+        'slide-right': 'toast-slide-in-right',
+        'slide-left': 'toast-slide-in-left',
+        'slide-up': 'toast-slide-in-up',
+        'slide-down': 'toast-slide-in-down',
+        'fade': 'toast-fade-in',
+        'zoom-in': 'toast-zoom-in',
+        'zoom-out': 'toast-zoom-out',
+        'bounce': 'toast-bounce',
+        'flip': 'toast-flip'
+      };
+      return classes[transition] || 'toast-slide-in-right';
+    }
+
+    // Show toast
+    function showToast(type, transition = 'slide-right', style = '', size = '', customType = '') {
+      const container = document.getElementById('toast-demo');
+      container.innerHTML = '';
+      
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type} ${getTransitionClass(transition)} toast-${style} toast-${size} ${customType}`;
+      toast.innerHTML = `
+        <div class="toast-icon">${icons[type]}</div>
+        <div class="toast-content">
+          <div class="toast-title">${titles[type]}</div>
+          <div class="toast-message">${messages[type]}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+        <div class="toast-progress ${type}"></div>
+      `;
+      
+      container.appendChild(toast);
+      
+      // Animate progress bar
+      setTimeout(() => {
+        const progress = toast.querySelector('.toast-progress');
+        if (progress) {
+          progress.style.width = '0%';
+          progress.style.transition = 'width 3s linear';
+        }
+      }, 100);
+      
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        if (toast.parentElement) {
+          toast.style.animation = 'toastFadeOut 0.3s ease forwards';
+          setTimeout(() => toast.remove(), 300);
+        }
+      }, 5000);
+    }
+
+    // Simplified show functions
+    function showToastColor(type) {
+      showToast(type, 'slide-right', '', '', '');
+    }
+
+    function showToastStyle(style, type) {
+      showToast(type, 'slide-right', style, '', '');
+    }
+
+    function showToastTransition(transition, type) {
+      showToast(type, transition, '', '', '');
+    }
+
+    function showToastType(type, type2) {
+      showToast(type2, 'slide-right', '', '', type);
+    }
+
+    function showToastSize(size, type) {
+      showToast(type, 'slide-right', '', size, '');
+    }
+
+    // Toggle code window
+    function toggleCode(btn) {
+      const codeWindow = btn.nextElementSibling;
+      if (codeWindow && codeWindow.classList.contains('code-window')) {
+        const isShown = codeWindow.classList.contains('show');
+        document.querySelectorAll('.code-window.show').forEach(w => {
+          w.classList.remove('show');
+          w.previousElementSibling.textContent = 'Show Code';
+        });
+        if (!isShown) {
+          codeWindow.classList.add('show');
+          btn.textContent = 'Hide Code';
+        } else {
+          codeWindow.classList.remove('show');
+          btn.textContent = 'Show Code';
+        }
+      }
+    }
+
+    // Copy code
+    function copyCode(btn) {
+      const codeWindow = btn.closest('.code-window');
+      const code = codeWindow.querySelector('pre').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // Add fade out animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes toastFadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-10px); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

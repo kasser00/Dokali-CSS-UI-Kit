@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modal Transitions - Dokali UI Kit</title>
+  <link rel="stylesheet" href="css/dokali-ui-kit.css">
+  <link rel="stylesheet" href="css/dokali-modals.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; padding: 2rem; background: var(--background); }
+    .demo-section { max-width: 900px; margin: 0 auto 3rem; }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    h2 { margin-top: 2rem; margin-bottom: 0.5rem; }
+    p { color: var(--text-muted); margin-bottom: 1.5rem; }
+    
+    .modal-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+    
+    .modal-btn {
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+    
+    .modal-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .theme-switcher {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .theme-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    
+    .theme-btn:hover, .theme-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .category {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .category h3 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+    
+    /* Code Window Styles */
+    .code-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.8125rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 1rem;
+    }
+    
+    .code-toggle:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .code-window {
+      display: none;
+      margin-top: 1rem;
+      background: #1e1e1e;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    
+    .code-window.show {
+      display: block;
+    }
+    
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      background: #2d2d2d;
+    }
+    
+    .code-title {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #9ca3af;
+    }
+    
+    .code-copy {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      background: #3d3d3d;
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #9ca3af;
+      cursor: pointer;
+    }
+    
+    .code-copy:hover { background: var(--primary); color: white; }
+    .code-copy.copied { background: var(--success); color: white; }
+    
+    .code-content { padding: 1rem; overflow-x: auto; max-height: 300px; }
+    .code-content pre { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.8125rem; line-height: 1.6; color: #d4d4d4; white-space: pre-wrap; }
+  </style>
+</head>
+<body data-theme="ocean">
+  <div class="demo-section">
+    <h1>Modal Transitions Kit</h1>
+    <p>Beautiful modal windows with various open/close transitions</p>
+    
+    <div class="theme-switcher">
+      <button class="theme-btn active" data-theme="ocean">Ocean</button>
+      <button class="theme-btn" data-theme="forest">Forest</button>
+      <button class="theme-btn" data-theme="sunset">Sunset</button>
+      <button class="theme-btn" data-theme="berry">Berry</button>
+      <button class="theme-btn" data-theme="midnight">Midnight</button>
+      <button class="theme-btn" data-theme="rose">Rose</button>
+    </div>
+  </div>
+
+  <!-- Basic Transitions -->
+  <div class="demo-section">
+    <h2>Basic Transitions</h2>
+    <p>Simple and smooth transitions for modals</p>
+    
+    <div class="category">
+      <h3>Slide Animations</h3>
+      <div class="modal-btn-grid">
+        <button class="modal-btn" onclick="openModal('modal-slide-up')">Slide Up</button>
+        <button class="modal-btn" onclick="openModal('modal-slide-down')">Slide Down</button>
+        <button class="modal-btn" onclick="openModal('modal-slide-left')">Slide Left</button>
+        <button class="modal-btn" onclick="openModal('modal-slide-right')">Slide Right</button>
+      </div>
+      <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+      <div class="code-window">
+        <div class="code-header"><span class="code-title">HTML</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-content"><pre>&lt;!-- Slide Up --&gt;
+&lt;div class="modal-overlay modal-slide-up" id="modal-slide-up"&gt;
+  &lt;div class="modal"&gt;
+    &lt;div class="modal-header"&gt;
+      &lt;h3 class="modal-title"&gt;Slide Up Modal&lt;/h3&gt;
+      &lt;button class="modal-close" onclick="closeModal(this)"&gt;×&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="modal-body"&gt;
+      &lt;p&gt;Modal content here.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="modal-footer"&gt;
+      &lt;button class="btn btn-secondary" onclick="closeModal(this)"&gt;Cancel&lt;/button&gt;
+      &lt;button class="btn btn-primary" onclick="closeModal(this)"&gt;Confirm&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Available Transitions --&gt;
+&lt;!-- modal-slide-up, modal-slide-down, modal-slide-left, modal-slide-right --&gt;
+&lt;!-- modal-zoom-in, modal-zoom-out, modal-fade-slide --&gt;
+&lt;!-- modal-bounce, modal-flip, modal-rotate, modal-door, modal-stretch, modal-roll --&gt;</pre></div>
+      </div>
+    </div>
+    
+    <div class="category">
+      <h3>Zoom Animations</h3>
+      <div class="modal-btn-grid">
+        <button class="modal-btn" onclick="openModal('modal-zoom-in')">Zoom In</button>
+        <button class="modal-btn" onclick="openModal('modal-zoom-out')">Zoom Out</button>
+        <button class="modal-btn" onclick="openModal('modal-fade-slide')">Fade + Slide</button>
+      </div>
+      <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+      <div class="code-window">
+        <div class="code-header"><span class="code-title">HTML</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-content"><pre>&lt;!-- Zoom In --&gt;
+&lt;div class="modal-overlay modal-zoom-in" id="modal-zoom-in"&gt;
+  &lt;div class="modal"&gt;
+    &lt;div class="modal-header"&gt;
+      &lt;h3 class="modal-title"&gt;Zoom In Modal&lt;/h3&gt;
+      &lt;button class="modal-close" onclick="closeModal(this)"&gt;×&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="modal-body"&gt;
+      &lt;p&gt;This modal zooms in from a smaller size.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="modal-footer"&gt;
+      &lt;button class="btn btn-primary" onclick="closeModal(this)"&gt;Confirm&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre></div>
+      </div>
+    </div>
+    
+    <div class="category">
+      <h3>Advanced Transitions</h3>
+      <div class="modal-btn-grid">
+        <button class="modal-btn" onclick="openModal('modal-bounce')">Bounce</button>
+        <button class="modal-btn" onclick="openModal('modal-flip')">Flip</button>
+        <button class="modal-btn" onclick="openModal('modal-rotate')">Rotate</button>
+        <button class="modal-btn" onclick="openModal('modal-door')">Door</button>
+        <button class="modal-btn" onclick="openModal('modal-stretch')">Stretch</button>
+        <button class="modal-btn" onclick="openModal('modal-roll')">Roll</button>
+      </div>
+      <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+      <div class="code-window">
+        <div class="code-header"><span class="code-title">HTML</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-content"><pre>&lt;!-- Bounce Transition --&gt;
+&lt;div class="modal-overlay modal-bounce" id="modal-bounce"&gt;
+  &lt;div class="modal"&gt;
+    &lt;div class="modal-header"&gt;
+      &lt;h3 class="modal-title"&gt;Bounce Modal&lt;/h3&gt;
+      &lt;button class="modal-close" onclick="closeModal(this)"&gt;×&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="modal-body"&gt;
+      &lt;p&gt;This modal bounces in with an elastic effect!&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="modal-footer"&gt;
+      &lt;button class="btn btn-primary" onclick="closeModal(this)"&gt;Confirm&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Other advanced: modal-flip, modal-rotate, modal-door, modal-stretch, modal-roll --&gt;</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Styles -->
+  <div class="demo-section">
+    <h2>Modal Styles</h2>
+    <p>Different visual styles for modals</p>
+    
+    <div class="category">
+      <h3>Color Variants</h3>
+      <div class="modal-btn-grid">
+        <button class="modal-btn" onclick="openModal('modal-style-dark')">Dark Modal</button>
+        <button class="modal-btn" onclick="openModal('modal-style-primary')">Primary</button>
+        <button class="modal-btn" onclick="openModal('modal-style-success')">Success</button>
+        <button class="modal-btn" onclick="openModal('modal-style-warning')">Warning</button>
+        <button class="modal-btn" onclick="openModal('modal-style-error')">Error</button>
+      </div>
+    </div>
+    
+    <div class="category">
+      <h3>Special Styles</h3>
+      <div class="modal-btn-grid">
+        <button class="modal-btn" onclick="openModal('modal-blur')">Backdrop Blur</button>
+        <button class="modal-btn" onclick="openModal('modal-round')">Round Corners</button>
+        <button class="modal-btn" onclick="openModal('modal-border')">Bordered</button>
+        <button class="modal-btn" onclick="openModal('modal-animated-border')">Animated Border</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Types -->
+  <div class="demo-section">
+    <h2>Modal Types</h2>
+    <p>Different types of modal content</p>
+    
+    <div class="category">
+      <h3>Content Types</h3>
+      <div class="modal-btn-grid">
+        <button class="modal-btn" onclick="openModal('modal-confirm')">Confirmation</button>
+        <button class="modal-btn" onclick="openModal('modal-avatar')">With Avatar</button>
+        <button class="modal-btn" onclick="openModal('modal-icon')">With Icon</button>
+        <button class="modal-btn" onclick="openModal('modal-image')">Image Header</button>
+        <button class="modal-btn" onclick="openModal('modal-form')">With Form</button>
+        <button class="modal-btn" onclick="openModal('modal-toast')">Toast Style</button>
+      </div>
+    </div>
+    
+    <div class="category">
+      <h3>Sizes</h3>
+      <div class="modal-btn-grid">
+        <button class="modal-btn" onclick="openModal('modal-size-sm')">Small</button>
+        <button class="modal-btn" onclick="openModal('modal-size-md')">Medium</button>
+        <button class="modal-btn" onclick="openModal('modal-size-lg')">Large</button>
+        <button class="modal-btn" onclick="openModal('modal-size-xl')">Extra Large</button>
+        <button class="modal-btn" onclick="openModal('modal-full')">Full Screen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Positions -->
+  <div class="demo-section">
+    <h2>Modal Positions</h2>
+    <p>Different positioning options</p>
+    
+    <div class="category">
+      <h3>Position</h3>
+      <div class="modal-btn-grid">
+        <button class="modal-btn" onclick="openModal('modal-pos-top')">Top</button>
+        <button class="modal-btn" onclick="openModal('modal-pos-bottom')">Bottom</button>
+        <button class="modal-btn" onclick="openModal('modal-pos-left')">Left</button>
+        <button class="modal-btn" onclick="openModal('modal-pos-right')">Right</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Base Modal Templates -->
+  
+  <!-- Slide Up -->
+  <div class="modal-overlay modal-slide-up" id="modal-slide-up">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Slide Up Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal slides up from the bottom when opening. Smooth and elegant transition.</p>
+        <p>Perfect for notifications and quick actions.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide Down -->
+  <div class="modal-overlay modal-slide-down" id="modal-slide-down">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Slide Down Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal slides down from the top when opening.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide Left -->
+  <div class="modal-overlay modal-slide-left" id="modal-slide-left">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Slide Left Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal slides in from the right.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide Right -->
+  <div class="modal-overlay modal-slide-right" id="modal-slide-right">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Slide Right Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal slides in from the left.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Zoom In -->
+  <div class="modal-overlay modal-zoom-in" id="modal-zoom-in">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Zoom In Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal zooms in from a smaller size.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Zoom Out -->
+  <div class="modal-overlay modal-zoom-out" id="modal-zoom-out">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Zoom Out Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal zooms out from a larger size.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fade Slide -->
+  <div class="modal-overlay modal-fade-slide" id="modal-fade-slide">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Fade + Slide Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Combined fade and slide transition for a smooth effect.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bounce -->
+  <div class="modal-overlay modal-bounce" id="modal-bounce">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Bounce Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal bounces in with an elastic effect!</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flip -->
+  <div class="modal-overlay modal-flip" id="modal-flip">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Flip Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal flips in from the top.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rotate -->
+  <div class="modal-overlay modal-rotate" id="modal-rotate">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Rotate Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal rotates in from the Y axis.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Door -->
+  <div class="modal-overlay modal-door" id="modal-door">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Door Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal opens like a door from the left.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stretch -->
+  <div class="modal-overlay modal-stretch" id="modal-stretch">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Stretch Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal stretches from center with elastic effect.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roll -->
+  <div class="modal-overlay modal-roll" id="modal-roll">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Roll Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal rolls down from the top.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dark Modal -->
+  <div class="modal-overlay" id="modal-style-dark">
+    <div class="modal modal-dark">
+      <div class="modal-header">
+        <h3 class="modal-title">Dark Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This is a dark themed modal for dark mode interfaces.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary Modal -->
+  <div class="modal-overlay" id="modal-style-primary">
+    <div class="modal modal-primary">
+      <div class="modal-header">
+        <h3 class="modal-title">Primary Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal has a primary color background.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeModal(this)">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="modal-style-success">
+    <div class="modal modal-success">
+      <div class="modal-header">
+        <h3 class="modal-title">Success Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal has a success color theme.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" onclick="closeModal(this)">Great!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Warning Modal -->
+  <div class="modal-overlay" id="modal-style-warning">
+    <div class="modal modal-warning">
+      <div class="modal-header">
+        <h3 class="modal-title">Warning Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal has a warning color theme.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Modal -->
+  <div class="modal-overlay" id="modal-style-error">
+    <div class="modal modal-error">
+      <div class="modal-header">
+        <h3 class="modal-title">Error Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal has an error color theme.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" onclick="closeModal(this)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blur Modal -->
+  <div class="modal-overlay modal-blur" id="modal-blur">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Blur Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal has a blurred backdrop effect.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Round Modal -->
+  <div class="modal-overlay modal-round" id="modal-round">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Round Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal has more rounded corners.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bordered Modal -->
+  <div class="modal-overlay modal-border" id="modal-border">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Bordered Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal has a colored border.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Animated Border Modal -->
+  <div class="modal-overlay modal-animated-border" id="modal-animated-border">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Animated Border</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal has an animated glowing border!</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal-overlay" id="modal-confirm">
+    <div class="modal">
+      <div class="modal-confirm">
+        <div class="modal-confirm-icon success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <h3 class="modal-confirm-title">Are you sure?</h3>
+        <p class="modal-confirm-message">This action cannot be undone. Please confirm to proceed.</p>
+        <div class="modal-confirm-actions">
+          <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+          <button class="btn btn-danger" onclick="closeModal(this)">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Avatar Modal -->
+  <div class="modal-overlay" id="modal-avatar">
+    <div class="modal">
+      <div class="modal-header modal-avatar">
+        <div class="modal-avatar-img">JD</div>
+        <div>
+          <h3 class="modal-title">John Doe</h3>
+          <p class="modal-subtitle">john@example.com</p>
+        </div>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This is a modal with avatar header. Great for user profile dialogs.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Close</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">View Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Icon Modal -->
+  <div class="modal-overlay" id="modal-icon">
+    <div class="modal">
+      <div class="modal-header modal-icon-header">
+        <div class="modal-icon primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h3 class="modal-title">Information</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal has an icon in the header. Great for notifications.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeModal(this)">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Header Modal -->
+  <div class="modal-overlay" id="modal-image">
+    <div class="modal">
+      <div class="modal-image-header">
+        <div class="modal-image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+        </div>
+        <div class="modal-header">
+          <h3 class="modal-title">Image Header Modal</h3>
+          <button class="modal-close" onclick="closeModal(this)">×</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <p>This modal has a gradient image header. Perfect for featured content.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Modal -->
+  <div class="modal-overlay" id="modal-form">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Contact Us</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body modal-form">
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-input" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-input form-textarea" placeholder="Your message..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Modal -->
+  <div class="modal-overlay modal-toast" id="modal-toast">
+    <div class="modal">
+      <div class="modal-confirm">
+        <div class="modal-confirm-icon success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <h3 class="modal-confirm-title">Success!</h3>
+        <p class="modal-confirm-message">Your changes have been saved successfully.</p>
+        <div class="modal-confirm-actions">
+          <button class="btn btn-primary" onclick="closeModal(this)">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Size Modals -->
+  <div class="modal-overlay" id="modal-size-sm">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">Small Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This is a small modal for quick confirmations.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-sm" onclick="closeModal(this)">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-size-md">
+    <div class="modal modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title">Medium Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This is a medium sized modal (default).</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-size-lg">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">Large Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This is a large modal for displaying more content.</p>
+        <p>Perfect for forms with many fields or detailed information.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-size-xl">
+    <div class="modal modal-xl">
+      <div class="modal-header">
+        <h3 class="modal-title">Extra Large Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This is an extra large modal for displaying extensive content.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-full">
+    <div class="modal modal-full">
+      <div class="modal-header">
+        <h3 class="modal-title">Full Screen Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This is a full screen modal.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal(this)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Position Modals -->
+  <div class="modal-overlay modal-top" id="modal-pos-top">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Top Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal appears at the top of the screen.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeModal(this)">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay modal-bottom" id="modal-pos-bottom">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Bottom Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal appears at the bottom of the screen.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeModal(this)">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay modal-left" id="modal-pos-left">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Left Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal appears on the left side.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeModal(this)">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay modal-right" id="modal-pos-right">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Right Modal</h3>
+        <button class="modal-close" onclick="closeModal(this)">×</button>
+      </div>
+      <div class="modal-body">
+        <p>This modal appears on the right side.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeModal(this)">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme switcher
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.body.setAttribute('data-theme', btn.dataset.theme);
+      });
+    });
+
+    // Open modal
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+
+    // Close modal
+    function closeModal(btn) {
+      btn.closest('.modal-overlay').classList.remove('active');
+    }
+
+    // Close on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+        }
+      });
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(overlay => {
+          overlay.classList.remove('active');
+        });
+      }
+    });
+
+    // Toggle code window
+    function toggleCode(btn) {
+      const codeWindow = btn.nextElementSibling;
+      if (codeWindow && codeWindow.classList.contains('code-window')) {
+        const isShown = codeWindow.classList.contains('show');
+        
+        // Close all other code windows
+        document.querySelectorAll('.code-window.show').forEach(w => {
+          w.classList.remove('show');
+          w.previousElementSibling.textContent = 'Show Code';
+        });
+        
+        if (!isShown) {
+          codeWindow.classList.add('show');
+          btn.textContent = 'Hide Code';
+        } else {
+          codeWindow.classList.remove('show');
+          btn.textContent = 'Show Code';
+        }
+      }
+    }
+
+    // Copy code
+    function copyCode(btn) {
+      const codeWindow = btn.closest('.code-window');
+      const code = codeWindow.querySelector('pre').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
