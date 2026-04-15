@@ -1,6 +1,6 @@
 # Dokali UI Kit
 
-A beautiful, lightweight CSS UI kit with multiple color themes and full RTL support 
+A beautiful, very lightweight CSS UI kit with multiple color themes and full RTL support 
 by Belaid Dokali - Libya 2026.
 
 ## Features
